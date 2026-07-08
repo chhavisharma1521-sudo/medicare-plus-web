@@ -80,6 +80,7 @@ export default function PatientDashboard() {
                   </div>
                   {a.status !== 'Cancelled' && (
                     <div className="flex flex-wrap gap-2">
+                      <Link to={`/consult/appt-${a.id}`} className="btn-primary !py-2 !px-3 text-xs">🎥 Join Video Call</Link>
                       {!a.paid && <Link to="/book" className="btn-accent !py-2 !px-3 text-xs">Pay Bill</Link>}
                       <Link to={`/book/${a.doctorId}`} className="btn-outline !py-2 !px-3 text-xs">Reschedule</Link>
                       <button onClick={() => cancel(a.id)} className="btn-ghost !py-2 !px-3 text-xs !text-red-500">Cancel</button>

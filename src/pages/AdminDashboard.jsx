@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { isAdmin, logoutAdmin } from '../lib/auth.js'
 import { doctors as seedDoctors } from '../data/doctors.js'
 import { ivfServices } from '../data/ivfServices.js'
@@ -149,6 +149,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="flex gap-2">
+                    {a.status !== 'Cancelled' && <Link to={`/consult/appt-${a.id}`} className="btn-primary !py-2 !px-3 text-xs">🎥 Join Call</Link>}
                     {!a.paid && a.status !== 'Cancelled' && <button onClick={async () => { await apiConfirmPay(a.id); refresh() }} className="btn-accent !py-2 !px-3 text-xs">Confirm Payment</button>}
                     {a.status !== 'Cancelled' && <button onClick={async () => { await apiCancel(a.id); refresh() }} className="btn-ghost !py-2 !px-3 text-xs !text-red-500">Cancel</button>}
                   </div>

@@ -17,6 +17,7 @@ import Contact from './pages/Contact.jsx'
 import { PatientLogin, PatientRegister, AdminLogin } from './pages/AuthPages.jsx'
 import PatientDashboard from './pages/PatientDashboard.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
+import VideoConsult from './pages/VideoConsult.jsx'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -48,6 +49,8 @@ export default function App() {
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/patient-dashboard" element={<PatientDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/consult" element={<VideoConsult />} />
+          <Route path="/consult/:room" element={<VideoConsult />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </main>

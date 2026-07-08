@@ -82,6 +82,7 @@ export default function DoctorProfile() {
           <Link to={`/book/${doctor.id}`} className="btn-primary mt-4 w-full">
             Book Appointment
           </Link>
+          <Link to={`/consult/doc-${doctor.id}`} className="btn-accent mt-2 w-full">🎥 Video Consult Now</Link>
           <a href="tel:+919000000000" className="btn-outline mt-2 w-full">📞 Call to Book</a>
           <p className="mt-3 text-center text-xs text-slate-400">Free cancellation up to 2 hours before</p>
         </aside>
