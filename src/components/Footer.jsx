@@ -23,7 +23,7 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-600 text-lg text-white">✚</span>
             <span className="font-display text-xl font-extrabold text-white">
-              MediCare<span className="text-brand-400"> Plus</span>
+              Shikhar<span className="text-brand-400"> Hospital</span>
             </span>
           </div>
           <p className="mt-4 max-w-sm text-sm text-slate-400">
@@ -63,7 +63,7 @@ export default function Footer() {
 
       <div className="border-t border-white/10">
         <div className="container-px flex flex-col items-center justify-between gap-2 py-5 text-xs text-slate-500 sm:flex-row">
-          <span>© {new Date().getFullYear()} MediCare Plus. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Shikhar Hospital. All rights reserved.</span>
           <div className="flex gap-4">
             <a href="#" className="hover:text-brand-300">Privacy Policy</a>
             <a href="#" className="hover:text-brand-300">Terms &amp; Conditions</a>

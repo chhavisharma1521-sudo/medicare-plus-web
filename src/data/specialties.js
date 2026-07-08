@@ -15,8 +15,8 @@ export const specialties = [
 ]
 
 export const hospitals = [
-  'MediCare Plus — City Center',
-  'MediCare Plus — West Wing',
-  'MediCare Plus — Green Park',
-  'MediCare Plus — Riverside',
+  'Shikhar Hospital — City Center',
+  'Shikhar Hospital — West Wing',
+  'Shikhar Hospital — Green Park',
+  'Shikhar Hospital — Riverside',
 ]

@@ -44,7 +44,7 @@ export default function Contact() {
         <aside className="space-y-4">
           {[
             { icon: '📞', t: '24×7 Helpline', v: '+91 90000 00000' },
-            { icon: '📧', t: 'Email', v: 'care@medicareplus.com' },
+            { icon: '📧', t: 'Email', v: 'care@shikharhospital.com' },
             { icon: '📍', t: 'Head Office', v: 'City Center, Main Road' },
             { icon: '🚑', t: 'Emergency', v: 'Dial 102 / 108' },
           ].map((c) => (

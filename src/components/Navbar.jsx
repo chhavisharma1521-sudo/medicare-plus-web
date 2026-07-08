@@ -31,7 +31,7 @@ export default function Navbar() {
             ✚
           </span>
           <span className="font-display text-xl font-extrabold text-ink-900">
-            MediCare<span className="text-brand-600"> Plus</span>
+            Shikhar<span className="text-brand-600"> Hospital</span>
           </span>
         </Link>
 
