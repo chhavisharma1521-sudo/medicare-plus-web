@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import FloatingButtons from './components/FloatingButtons.jsx'
+import ChatWidget from './components/ChatWidget.jsx'
 import Home from './pages/Home.jsx'
 import About from './pages/About.jsx'
 import Services from './pages/Services.jsx'
@@ -83,6 +84,7 @@ export default function App() {
       </main>
       <Footer />
       <FloatingButtons />
+      <ChatWidget />
     </div>
   )
 }

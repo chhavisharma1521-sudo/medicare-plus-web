@@ -208,6 +208,22 @@ const _doctors = [
 
 const MORNING = ['10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM']
 const EVENING = ['5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM']
+
+// Reliable professional headshots (gender-matched to each doctor)
+const PHOTOS = [
+  'https://randomuser.me/api/portraits/women/65.jpg', // Priya
+  'https://randomuser.me/api/portraits/men/32.jpg',   // Rahul
+  'https://randomuser.me/api/portraits/women/44.jpg', // Anjali
+  'https://randomuser.me/api/portraits/men/52.jpg',   // Vikram
+  'https://randomuser.me/api/portraits/women/68.jpg', // Neha
+  'https://randomuser.me/api/portraits/men/75.jpg',   // Arjun
+  'https://randomuser.me/api/portraits/women/12.jpg', // Sunita
+  'https://randomuser.me/api/portraits/men/45.jpg',   // Anil
+  'https://randomuser.me/api/portraits/women/90.jpg', // Kavya
+  'https://randomuser.me/api/portraits/men/11.jpg',   // Rohan
+  'https://randomuser.me/api/portraits/women/28.jpg', // Meera
+  'https://randomuser.me/api/portraits/men/60.jpg',   // Sameer
+]
 const DAY_SETS = [
   ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
   ['Mon', 'Wed', 'Fri', 'Sat'],
@@ -218,6 +234,7 @@ const DAY_SETS = [
 // Enrich each doctor with department, qualification alias, available days & session slots
 export const doctors = _doctors.map((d, i) => ({
   ...d,
+  photo: PHOTOS[i] || d.photo,
   department: d.specialty,
   qualification: d.credentials,
   availableDays: DAY_SETS[i % DAY_SETS.length],

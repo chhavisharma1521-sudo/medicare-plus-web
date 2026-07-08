@@ -29,8 +29,16 @@ export async function apiCreateAppointment(record) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
-  if (!res.ok) throw new Error('Booking failed')
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.detail || 'Booking failed')
+  }
   return res.json()
+}
+
+export async function apiGetBookedSlots(doctorId, date) {
+  const res = await fetch(`${API_BASE}/api/booked-slots?doctorId=${doctorId}&date=${date}`)
+  return res.ok ? res.json() : []
 }
 
 export async function apiGetAppointments({ phone = '', email = '' } = {}) {

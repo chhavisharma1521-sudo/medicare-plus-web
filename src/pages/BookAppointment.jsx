@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { doctors, getDoctor } from '../data/doctors.js'
 import { specialties } from '../data/specialties.js'
-import { buildCalendar, apiCreateAppointment, apiGetBlockedDates } from '../lib/appointments.js'
+import { buildCalendar, apiCreateAppointment, apiGetBlockedDates, apiGetBookedSlots } from '../lib/appointments.js'
 
 const STEPS = ['Doctor', 'Date & Time', 'Details', 'Payment', 'Confirmed']
 
@@ -23,9 +23,17 @@ export default function BookAppointment() {
   const [error, setError] = useState('')
 
   const [blockedList, setBlockedList] = useState([])
+  const [bookedSlots, setBookedSlots] = useState([])
   useEffect(() => {
     if (doctor) apiGetBlockedDates(doctor.id).then(setBlockedList)
   }, [doctor])
+
+  const pickDate = (iso) => {
+    setDate(iso)
+    setSlot('')
+    if (doctor) apiGetBookedSlots(doctor.id, iso).then(setBookedSlots)
+    else setBookedSlots([])
+  }
 
   const deptDoctors = useMemo(
     () => (department === 'all' ? doctors : doctors.filter((d) => d.department === department)),
@@ -55,8 +63,14 @@ export default function BookAppointment() {
       const saved = await apiCreateAppointment(record)
       setAppt(saved)
       setStep(4)
-    } catch {
-      setError('Booking failed. Please check your connection and try again.')
+    } catch (e) {
+      setError(e.message || 'Booking failed. Please try again.')
+      if ((e.message || '').includes('slot')) {
+        // slot was taken — send them back to pick another
+        if (doctor) apiGetBookedSlots(doctor.id, date).then(setBookedSlots)
+        setSlot('')
+        setStep(1)
+      }
     } finally {
       setBooking(false)
     }
@@ -146,7 +160,7 @@ export default function BookAppointment() {
                   <button
                     key={c.iso}
                     disabled={blocked}
-                    onClick={() => { setDate(c.iso); setSlot('') }}
+                    onClick={() => pickDate(c.iso)}
                     title={blocked ? c.status.reason : 'Available'}
                     className={`rounded-xl border px-1 py-2 text-center transition ${
                       selected
@@ -172,9 +186,10 @@ export default function BookAppointment() {
             {date && (
               <>
                 <label className="lbl mt-6">☀️ Morning Session</label>
-                <SlotRow slots={doctor.morningSlots} value={slot} onPick={setSlot} />
+                <SlotRow slots={doctor.morningSlots} value={slot} onPick={setSlot} booked={bookedSlots} />
                 <label className="lbl mt-4">🌆 Evening Session</label>
-                <SlotRow slots={doctor.eveningSlots} value={slot} onPick={setSlot} />
+                <SlotRow slots={doctor.eveningSlots} value={slot} onPick={setSlot} booked={bookedSlots} />
+                <p className="mt-2 text-xs text-slate-400">Greyed-out slots are already booked.</p>
               </>
             )}
 
@@ -296,20 +311,29 @@ function Row({ k, v, highlight }) {
     </div>
   )
 }
-function SlotRow({ slots, value, onPick }) {
+function SlotRow({ slots, value, onPick, booked = [] }) {
   return (
     <div className="flex flex-wrap gap-2">
-      {slots.map((s) => (
-        <button
-          key={s}
-          onClick={() => onPick(s)}
-          className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
-            value === s ? 'border-brand-600 bg-brand-600 text-white' : 'border-slate-200 hover:border-brand-400 dark:border-slate-700 dark:text-slate-200'
-          }`}
-        >
-          {s}
-        </button>
-      ))}
+      {slots.map((s) => {
+        const isBooked = booked.includes(s)
+        return (
+          <button
+            key={s}
+            disabled={isBooked}
+            onClick={() => onPick(s)}
+            title={isBooked ? 'Already booked' : ''}
+            className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
+              isBooked
+                ? 'cursor-not-allowed border-slate-100 bg-slate-100 text-slate-300 line-through dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-600'
+                : value === s
+                ? 'border-brand-600 bg-brand-600 text-white'
+                : 'border-slate-200 hover:border-brand-400 dark:border-slate-700 dark:text-slate-200'
+            }`}
+          >
+            {s}
+          </button>
+        )
+      })}
     </div>
   )
 }
