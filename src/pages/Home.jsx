@@ -5,7 +5,7 @@ import { doctors } from '../data/doctors.js'
 import { specialties } from '../data/specialties.js'
 
 const quickActions = [
-  { icon: '📅', title: 'Book Appointment', desc: 'OPD & consultations', to: '/doctors' },
+  { icon: '📅', title: 'Book Appointment', desc: 'OPD & consultations', to: '/book' },
   { icon: '💬', title: 'Get an Opinion', desc: 'Second opinion online', to: '/contact' },
   { icon: '🧾', title: 'Lab Reports', desc: 'Access your reports', to: '/contact' },
   { icon: '📦', title: 'Health Packages', desc: 'Preventive check-ups', to: '/packages' },
@@ -46,11 +46,14 @@ export default function Home() {
               one modern platform.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/doctors" className="btn-accent !px-6 !py-3.5">Find a Doctor</Link>
-              <Link to="/packages" className="btn !border-2 !border-white/30 !py-3.5 text-white hover:!bg-white/10">
-                Health Packages
+              <Link to="/book" className="btn-accent !px-6 !py-3.5">📅 Book My Appointment</Link>
+              <Link to="/doctors" className="btn !border-2 !border-white/30 !py-3.5 text-white hover:!bg-white/10">
+                Find a Doctor
               </Link>
             </div>
+            <a href="tel:+919393939393" className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur">
+              🚑 24×7 Emergency Helpline: +91 93939 39393
+            </a>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

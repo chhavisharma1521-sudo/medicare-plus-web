@@ -1,0 +1,41 @@
+export const ivfServices = [
+  { id: 'ivf', name: 'IVF', icon: '🧬', short: 'In-Vitro Fertilization', desc: 'Eggs and sperm are combined in our advanced lab, and healthy embryos are transferred to the uterus — the most effective treatment for many fertility challenges.' },
+  { id: 'iui', name: 'IUI', icon: '💉', short: 'Intrauterine Insemination', desc: 'Prepared sperm is placed directly into the uterus during ovulation — a simple, less invasive first-line fertility treatment.' },
+  { id: 'icsi', name: 'ICSI', icon: '🔬', short: 'Intracytoplasmic Sperm Injection', desc: 'A single healthy sperm is injected directly into an egg — ideal for male-factor infertility and previous IVF failures.' },
+  { id: 'egg-donor', name: 'Egg Donor', icon: '🥚', short: 'Donor Egg Program', desc: 'Carefully screened donor eggs help women who cannot conceive with their own eggs achieve pregnancy.' },
+  { id: 'sperm-donor', name: 'Sperm Donor', icon: '🧫', short: 'Donor Sperm Program', desc: 'Screened, high-quality donor sperm for couples and individuals facing severe male infertility.' },
+  { id: 'embryo-donor', name: 'Embryo Donor', icon: '🌱', short: 'Donor Embryo Program', desc: 'Donated embryos offer hope to couples who cannot use their own eggs or sperm.' },
+  { id: 'embryo-freezing', name: 'Embryo Freezing', icon: '❄️', short: 'Embryo Cryopreservation', desc: 'Surplus healthy embryos are safely frozen (vitrified) for future pregnancy attempts.' },
+  { id: 'egg-freezing', name: 'Egg Freezing', icon: '🧊', short: 'Oocyte Cryopreservation', desc: 'Preserve your fertility by freezing eggs at their healthiest for use later in life.' },
+  { id: 'sperm-freezing', name: 'Sperm Freezing', icon: '🧪', short: 'Sperm Cryopreservation', desc: 'Store sperm safely before medical treatment or for future family planning.' },
+  { id: 'laser-hatching', name: 'Laser Assisted Hatching', icon: '⚡', short: 'Improved Implantation', desc: 'A precise laser thins the embryo\'s outer shell to improve implantation and success rates.' },
+  { id: 'fertility-preservation', name: 'Fertility Preservation', icon: '🛡️', short: 'Protect Your Future', desc: 'Comprehensive options to preserve fertility before cancer therapy, surgery or age-related decline.' },
+  { id: 'male-infertility', name: 'Male Infertility Treatment', icon: '👨‍⚕️', short: 'Complete Male Care', desc: 'Diagnosis and treatment of low sperm count, motility issues and hormonal imbalances.' },
+  { id: 'female-infertility', name: 'Female Infertility Treatment', icon: '👩‍⚕️', short: 'Complete Female Care', desc: 'Evaluation and treatment of ovulation, tubal and uterine factors affecting fertility.' },
+  { id: 'pcos', name: 'PCOS Treatment', icon: '🌸', short: 'Hormonal Balance', desc: 'Personalised care for Polycystic Ovary Syndrome to restore ovulation and improve conception.' },
+  { id: 'endometriosis', name: 'Endometriosis Care', icon: '🎗️', short: 'Advanced Management', desc: 'Medical and surgical management of endometriosis to relieve pain and boost fertility.' },
+  { id: 'cancer-fertility', name: 'Cancer & Fertility Preservation', icon: '🎀', short: 'Onco-Fertility', desc: 'Preserve eggs, sperm or embryos before starting cancer treatment to protect future parenthood.' },
+  { id: 'rpl', name: 'Recurrent Pregnancy Loss', icon: '🤍', short: 'RPL Evaluation', desc: 'Specialised investigation and treatment for couples experiencing repeated miscarriages.' },
+  { id: 'high-risk', name: 'High Risk Pregnancy Consultation', icon: '🩺', short: 'Expert Monitoring', desc: 'Close monitoring and care for pregnancies that need extra medical attention.' },
+  { id: 'counselling', name: 'Fertility Counselling', icon: '💬', short: 'Emotional Support', desc: 'Compassionate counselling to guide and support you through every step of your journey.' },
+  { id: 'genetic-testing', name: 'Genetic Testing', icon: '🧠', short: 'PGT / Screening', desc: 'Pre-implantation genetic testing to select the healthiest embryos and reduce genetic risks.' },
+  { id: 'blastocyst', name: 'Blastocyst Culture', icon: '🔵', short: 'Day-5 Embryo Culture', desc: 'Embryos are cultured to the blastocyst stage for higher implantation potential.' },
+  { id: 'failed-cycles', name: 'IVF After Failed Cycles', icon: '🔄', short: 'Second Chance', desc: 'Advanced protocols and detailed analysis for couples after previous unsuccessful IVF cycles.' },
+]
+
+export const getIvfService = (id) => ivfServices.find((s) => s.id === id)
+
+export const whyChoose = [
+  { icon: '💖', title: 'Personalized Care' },
+  { icon: '👩‍⚕️', title: 'Expert Fertility Specialists' },
+  { icon: '🔬', title: 'Advanced IVF Laboratory' },
+  { icon: '🏥', title: 'Modern Operation Theatre' },
+  { icon: '🛠️', title: 'International Standard Equipment' },
+  { icon: '🧑‍🔬', title: 'Experienced Embryologists' },
+  { icon: '🛏️', title: 'Clean & Hygienic Rooms' },
+  { icon: '🫂', title: 'Emotional Counselling' },
+  { icon: '💰', title: 'Affordable Treatment' },
+  { icon: '📈', title: 'High Success Rate' },
+  { icon: '🔒', title: 'Complete Privacy' },
+  { icon: '🕐', title: '24×7 Patient Support' },
+]

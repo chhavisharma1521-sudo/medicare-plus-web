@@ -43,20 +43,38 @@ export default function Contact() {
 
         <aside className="space-y-4">
           {[
-            { icon: '📞', t: '24×7 Helpline', v: '+91 90000 00000' },
+            { icon: '📍', t: 'Hospital Address', v: 'ShiKhar Hospital, City Center, Main Road' },
             { icon: '📧', t: 'Email', v: 'care@shikharhospital.com' },
-            { icon: '📍', t: 'Head Office', v: 'City Center, Main Road' },
-            { icon: '🚑', t: 'Emergency', v: 'Dial 102 / 108' },
+            { icon: '🚑', t: 'Emergency Number', v: '+91 93939 39393' },
+            { icon: '👶', t: 'IVF Helpline', v: '+91 93939 00000' },
           ].map((c) => (
-            <div key={c.t} className="flex items-start gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-card">
-              <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand-50 text-xl">{c.icon}</span>
+            <div key={c.t} className="flex items-start gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-ink-800">
+              <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand-50 text-xl dark:bg-brand-900/40">{c.icon}</span>
               <div>
                 <div className="text-xs uppercase tracking-wide text-slate-400">{c.t}</div>
-                <div className="font-semibold text-ink-900">{c.v}</div>
+                <div className="font-semibold text-ink-900 dark:text-white">{c.v}</div>
               </div>
             </div>
           ))}
+
+          <a href="https://wa.me/919393939393" target="_blank" rel="noreferrer" className="btn w-full bg-[#25D366] text-white hover:opacity-90">💬 Chat on WhatsApp</a>
+
+          <div className="flex justify-center gap-3">
+            {['📘', '🐦', '📸', '💼', '▶️'].map((s, i) => (
+              <a key={i} href="#" className="grid h-10 w-10 place-items-center rounded-lg bg-slate-100 text-lg hover:bg-brand-100 dark:bg-slate-800">{s}</a>
+            ))}
+          </div>
         </aside>
+      </div>
+
+      {/* Map */}
+      <div className="mt-8 overflow-hidden rounded-3xl border border-slate-100 shadow-card dark:border-slate-800">
+        <iframe
+          title="ShiKhar Hospital Location"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=77.05%2C28.55%2C77.35%2C28.70&layer=mapnik"
+          className="h-72 w-full"
+          loading="lazy"
+        />
       </div>
     </div>
   )

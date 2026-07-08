@@ -1,5 +1,5 @@
 // Doctor directory — photos use royalty-free Unsplash portraits (swap with real photos later)
-export const doctors = [
+const _doctors = [
   {
     id: 1,
     name: 'Dr. Priya Sharma',
@@ -205,3 +205,25 @@ export const doctors = [
     bio: 'Kidney disease, dialysis and transplant specialist dedicated to long-term renal health.',
   },
 ]
+
+const MORNING = ['10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM']
+const EVENING = ['5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM']
+const DAY_SETS = [
+  ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  ['Mon', 'Wed', 'Fri', 'Sat'],
+  ['Tue', 'Thu', 'Sat'],
+  ['Mon', 'Tue', 'Thu', 'Fri', 'Sat'],
+]
+
+// Enrich each doctor with department, qualification alias, available days & session slots
+export const doctors = _doctors.map((d, i) => ({
+  ...d,
+  department: d.specialty,
+  qualification: d.credentials,
+  availableDays: DAY_SETS[i % DAY_SETS.length],
+  morningSlots: MORNING,
+  eveningSlots: EVENING,
+}))
+
+export const getDoctor = (id) => doctors.find((d) => d.id === Number(id))
+

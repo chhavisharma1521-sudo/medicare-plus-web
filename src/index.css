@@ -7,7 +7,10 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-slate-50 text-ink-900 font-sans antialiased;
+    @apply bg-slate-50 text-ink-900 font-sans antialiased transition-colors duration-300;
+  }
+  html.dark body {
+    @apply bg-ink-900 text-slate-100;
   }
   h1, h2, h3, h4 {
     @apply font-display;
@@ -37,9 +40,15 @@
     @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold;
   }
   .select {
-    @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-ink-900 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10;
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-ink-900 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white;
   }
   .input {
-    @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink-900 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 placeholder:text-slate-400;
+    @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink-900 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 placeholder:text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-white;
+  }
+  .lbl {
+    @apply mb-1.5 mt-4 block text-xs font-bold uppercase tracking-wide text-slate-400;
+  }
+  .section-h {
+    @apply mb-4 text-xl font-extrabold text-ink-900 dark:text-white;
   }
 }
