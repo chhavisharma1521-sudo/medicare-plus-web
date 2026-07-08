@@ -19,10 +19,37 @@ import PatientDashboard from './pages/PatientDashboard.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
 import VideoConsult from './pages/VideoConsult.jsx'
 
+const TITLES = {
+  '/': 'ShiKhar Hospital — Multi-Speciality Healthcare',
+  '/about': 'About Us — ShiKhar Hospital',
+  '/services': 'Our Services — ShiKhar Hospital',
+  '/doctors': 'Find a Doctor — ShiKhar Hospital',
+  '/book': 'Book Appointment — ShiKhar Hospital',
+  '/ivf': 'IVF & Fertility — ShiKhar Hospital',
+  '/contact': 'Contact Us — ShiKhar Hospital',
+  '/patient-login': 'Patient Login — ShiKhar Hospital',
+  '/patient-dashboard': 'My Dashboard — ShiKhar Hospital',
+  '/admin-dashboard': 'Admin — ShiKhar Hospital',
+}
+
 function ScrollToTop() {
   const { pathname } = useLocation()
-  useEffect(() => window.scrollTo(0, 0), [pathname])
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    document.title = TITLES[pathname] || 'ShiKhar Hospital — Multi-Speciality Healthcare'
+  }, [pathname])
   return null
+}
+
+function NotFound() {
+  return (
+    <div className="container-px grid place-items-center py-28 text-center dark:text-slate-100">
+      <div className="text-7xl font-extrabold text-brand-600">404</div>
+      <h1 className="mt-4 text-2xl font-extrabold text-ink-900 dark:text-white">Page not found</h1>
+      <p className="mt-2 text-slate-500">The page you're looking for doesn't exist or has moved.</p>
+      <a href="/" className="btn-primary mt-6">← Back to Home</a>
+    </div>
+  )
 }
 
 export default function App() {
@@ -51,7 +78,7 @@ export default function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/consult" element={<VideoConsult />} />
           <Route path="/consult/:room" element={<VideoConsult />} />
-          <Route path="*" element={<Home />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />

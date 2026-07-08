@@ -61,6 +61,20 @@ export default function Footer() {
         ))}
       </div>
 
+      {/* Newsletter */}
+      <div className="border-t border-white/10">
+        <div className="container-px flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
+          <div>
+            <div className="font-display text-lg font-bold text-white">Subscribe to health tips</div>
+            <div className="text-sm text-slate-400">Get expert advice & offers in your inbox.</div>
+          </div>
+          <form onSubmit={(e) => { e.preventDefault(); alert('Subscribed! Thank you.') }} className="flex w-full max-w-md gap-2">
+            <input required type="email" placeholder="Your email address" className="h-11 flex-1 rounded-xl border border-white/15 bg-white/5 px-4 text-sm text-white outline-none placeholder:text-slate-500 focus:border-brand-400" />
+            <button className="btn-primary !py-2.5">Subscribe</button>
+          </form>
+        </div>
+      </div>
+
       <div className="border-t border-white/10">
         <div className="container-px flex flex-col items-center justify-between gap-2 py-5 text-xs text-slate-500 sm:flex-row">
           <span>© {new Date().getFullYear()} Shikhar Hospital. All rights reserved.</span>

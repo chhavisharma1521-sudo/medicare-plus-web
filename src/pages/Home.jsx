@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
 import SectionHeading from '../components/SectionHeading.jsx'
 import DoctorCard from '../components/DoctorCard.jsx'
+import CountUp from '../components/CountUp.jsx'
+import TrustBadges from '../components/TrustBadges.jsx'
+import Testimonials from '../components/Testimonials.jsx'
 import { doctors } from '../data/doctors.js'
 import { specialties } from '../data/specialties.js'
 
@@ -59,7 +62,7 @@ export default function Home() {
           <div className="grid grid-cols-2 gap-4">
             {stats.map((s) => (
               <div key={s.label} className="rounded-3xl bg-white/10 p-6 backdrop-blur">
-                <div className="text-3xl font-extrabold text-white">{s.num}</div>
+                <CountUp value={s.num} className="text-3xl font-extrabold text-white" />
                 <div className="mt-1 text-sm text-brand-50/80">{s.label}</div>
               </div>
             ))}
@@ -87,6 +90,11 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* ── TRUST BADGES ── */}
+      <div className="mt-14">
+        <TrustBadges />
+      </div>
 
       {/* ── SPECIALITIES ── */}
       <section className="container-px py-16">
@@ -142,6 +150,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <Testimonials />
 
       {/* ── CTA ── */}
       <section className="container-px pb-4">
