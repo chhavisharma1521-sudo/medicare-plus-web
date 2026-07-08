@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { doctors, getDoctor } from '../data/doctors.js'
 import { specialties } from '../data/specialties.js'
-import { buildCalendar, apiCreateAppointment } from '../lib/appointments.js'
+import { buildCalendar, apiCreateAppointment, apiGetBlockedDates } from '../lib/appointments.js'
 
 const STEPS = ['Doctor', 'Date & Time', 'Details', 'Payment', 'Confirmed']
 
@@ -22,11 +22,16 @@ export default function BookAppointment() {
   const [booking, setBooking] = useState(false)
   const [error, setError] = useState('')
 
+  const [blockedList, setBlockedList] = useState([])
+  useEffect(() => {
+    if (doctor) apiGetBlockedDates(doctor.id).then(setBlockedList)
+  }, [doctor])
+
   const deptDoctors = useMemo(
     () => (department === 'all' ? doctors : doctors.filter((d) => d.department === department)),
     [department]
   )
-  const calendar = useMemo(() => buildCalendar(21, doctor), [doctor])
+  const calendar = useMemo(() => buildCalendar(21, doctor, blockedList), [doctor, blockedList])
 
   const canConfirmPatient = patient.name && patient.phone
 

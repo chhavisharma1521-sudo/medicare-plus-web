@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getPatient, logoutPatient } from '../lib/auth.js'
-import { apiGetAppointments, apiCancel } from '../lib/appointments.js'
+import { apiGetAppointments, apiCancel, apiGetNotifications } from '../lib/appointments.js'
 
 const tabs = ['Appointments', 'Prescriptions', 'Medical History', 'Notifications']
 
@@ -10,13 +10,14 @@ export default function PatientDashboard() {
   const patient = getPatient()
   const [tab, setTab] = useState('Appointments')
   const [appts, setAppts] = useState([])
+  const [notifs, setNotifs] = useState([])
 
   const refresh = () =>
     apiGetAppointments({ email: patient?.email || '', phone: patient?.phone || '' }).then(setAppts)
 
   useEffect(() => {
     if (!patient) nav('/patient-login')
-    else refresh()
+    else { refresh(); apiGetNotifications().then(setNotifs) }
   }, [])
 
   const cancel = async (id) => {
@@ -43,7 +44,7 @@ export default function PatientDashboard() {
         <Stat n={appts.filter((a) => a.status !== 'Cancelled').length} l="Active Appointments" icon="📅" />
         <Stat n={appts.filter((a) => !a.paid && a.status !== 'Cancelled').length} l="Pending Bills" icon="💳" />
         <Stat n={2} l="Prescriptions" icon="💊" />
-        <Stat n={3} l="Notifications" icon="🔔" />
+        <Stat n={notifs.length} l="Notifications" icon="🔔" />
       </div>
 
       {/* tabs */}
@@ -116,8 +117,14 @@ export default function PatientDashboard() {
 
         {tab === 'Notifications' && (
           <div className="space-y-3">
-            {['🔔 Your appointment is confirmed. Please arrive 10 mins early.', '💊 Prescription refill reminder for Amlodipine.', '📅 Free health camp this Sunday at City Center.'].map((n) => (
-              <div key={n} className="rounded-2xl border border-slate-100 bg-white p-4 text-sm shadow-card dark:border-slate-800 dark:bg-ink-800 dark:text-slate-200">{n}</div>
+            {notifs.length === 0 ? (
+              <p className="text-slate-500">No notifications yet.</p>
+            ) : notifs.map((n) => (
+              <div key={n.id} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-card dark:border-slate-800 dark:bg-ink-800">
+                <div className="font-bold text-ink-900 dark:text-white">🔔 {n.title}</div>
+                {n.message && <div className="mt-1 text-sm text-slate-500 dark:text-slate-300">{n.message}</div>}
+                <div className="mt-1 text-xs text-slate-400">{(n.createdAt || '').slice(0, 16).replace('T', ' ')}</div>
+              </div>
             ))}
           </div>
         )}

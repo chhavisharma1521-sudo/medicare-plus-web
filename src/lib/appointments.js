@@ -69,13 +69,44 @@ export async function apiDeleteDoctor(id) {
   await fetch(`${API_BASE}/api/extra-doctors/${id}`, { method: 'DELETE' })
 }
 
+// Blocked dates (admin manages, booking respects)
+export async function apiGetBlockedDates(doctorId = 0) {
+  const res = await fetch(`${API_BASE}/api/blocked-dates?doctorId=${doctorId}`)
+  return res.ok ? res.json() : []
+}
+export async function apiAddBlockedDate(b) {
+  const res = await fetch(`${API_BASE}/api/blocked-dates`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b),
+  })
+  return res.ok ? res.json() : null
+}
+export async function apiDeleteBlockedDate(id) {
+  await fetch(`${API_BASE}/api/blocked-dates/${id}`, { method: 'DELETE' })
+}
+
+// Notifications
+export async function apiGetNotifications() {
+  const res = await fetch(`${API_BASE}/api/notifications`)
+  return res.ok ? res.json() : []
+}
+export async function apiAddNotification(n) {
+  const res = await fetch(`${API_BASE}/api/notifications`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(n),
+  })
+  return res.ok ? res.json() : null
+}
+export async function apiDeleteNotification(id) {
+  await fetch(`${API_BASE}/api/notifications/${id}`, { method: 'DELETE' })
+}
+
 // ── Calendar / blocked-date logic (client-side, deterministic) ──
-export function dateStatus(dateStr, doctor) {
+export function dateStatus(dateStr, doctor, apiBlocked = {}) {
   if (!dateStr) return { ok: true }
   const date = new Date(dateStr + 'T00:00:00')
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   if (date < today) return { ok: false, reason: 'Past date' }
+  if (apiBlocked[dateStr]) return { ok: false, reason: apiBlocked[dateStr] } // admin-blocked
   if (HOLIDAYS.includes(dateStr.slice(5))) return { ok: false, reason: 'Holiday' }
   const weekday = DAYS[date.getDay()]
   if (doctor && !doctor.availableDays.includes(weekday)) return { ok: false, reason: 'Doctor Not Available' }
@@ -83,7 +114,10 @@ export function dateStatus(dateStr, doctor) {
   return { ok: true }
 }
 
-export function buildCalendar(days, doctor) {
+// apiBlockedList: array of {date, reason} from the backend
+export function buildCalendar(days, doctor, apiBlockedList = []) {
+  const apiBlocked = {}
+  apiBlockedList.forEach((b) => { apiBlocked[b.date] = b.reason || 'Blocked' })
   const out = []
   const start = new Date()
   for (let i = 0; i < days; i++) {
@@ -94,7 +128,7 @@ export function buildCalendar(days, doctor) {
       iso,
       label: d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
       weekday: DAY_ABBR[d.getDay()],
-      status: dateStatus(iso, doctor),
+      status: dateStatus(iso, doctor, apiBlocked),
     })
   }
   return out
