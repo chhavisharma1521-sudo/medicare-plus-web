@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getPatient, logoutPatient } from '../lib/auth.js'
-import { getAppointments, cancelAppointment } from '../lib/appointments.js'
+import { apiGetAppointments, apiCancel } from '../lib/appointments.js'
 
 const tabs = ['Appointments', 'Prescriptions', 'Medical History', 'Notifications']
 
@@ -11,13 +11,17 @@ export default function PatientDashboard() {
   const [tab, setTab] = useState('Appointments')
   const [appts, setAppts] = useState([])
 
+  const refresh = () =>
+    apiGetAppointments({ email: patient?.email || '', phone: patient?.phone || '' }).then(setAppts)
+
   useEffect(() => {
     if (!patient) nav('/patient-login')
-    else setAppts(getAppointments())
+    else refresh()
   }, [])
 
-  const refresh = () => setAppts(getAppointments())
-  const cancel = (id) => { if (confirm('Cancel this appointment?')) { cancelAppointment(id); refresh() } }
+  const cancel = async (id) => {
+    if (confirm('Cancel this appointment?')) { await apiCancel(id); refresh() }
+  }
 
   if (!patient) return null
 

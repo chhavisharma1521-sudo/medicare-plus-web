@@ -3,32 +3,44 @@ import { useNavigate } from 'react-router-dom'
 import { isAdmin, logoutAdmin } from '../lib/auth.js'
 import { doctors as seedDoctors } from '../data/doctors.js'
 import { ivfServices } from '../data/ivfServices.js'
-import { getAppointments, updateAppointment, cancelAppointment } from '../lib/appointments.js'
+import {
+  apiGetAppointments, apiConfirmPay, apiCancel,
+  apiGetExtraDoctors, apiAddDoctor, apiDeleteDoctor,
+} from '../lib/appointments.js'
 
 const tabs = ['Overview', 'Doctors', 'Appointments', 'Patients', 'IVF Services']
 
 export default function AdminDashboard() {
   const nav = useNavigate()
   const [tab, setTab] = useState('Overview')
-  const [docs, setDocs] = useState(seedDoctors.map((d) => ({ id: d.id, name: d.name, specialtyLabel: d.specialtyLabel, fee: d.fee })))
+  const seed = seedDoctors.map((d) => ({ id: 's' + d.id, name: d.name, specialtyLabel: d.specialtyLabel, fee: d.fee, seed: true }))
+  const [extraDocs, setExtraDocs] = useState([])
   const [appts, setAppts] = useState([])
   const [form, setForm] = useState({ name: '', specialtyLabel: '', fee: '' })
 
+  const refresh = () => apiGetAppointments().then(setAppts)
+  const refreshDocs = () => apiGetExtraDoctors().then(setExtraDocs)
+
   useEffect(() => {
     if (!isAdmin()) nav('/admin-login')
-    else setAppts(getAppointments())
+    else { refresh(); refreshDocs() }
   }, [])
-  const refresh = () => setAppts(getAppointments())
 
   if (!isAdmin()) return null
 
-  const addDoctor = (e) => {
+  const docs = [...extraDocs, ...seed]
+
+  const addDoctor = async (e) => {
     e.preventDefault()
     if (!form.name) return
-    setDocs([{ id: Date.now(), ...form, fee: form.fee || 500 }, ...docs])
+    await apiAddDoctor({ name: form.name, specialtyLabel: form.specialtyLabel, fee: Number(form.fee) || 500 })
     setForm({ name: '', specialtyLabel: '', fee: '' })
+    refreshDocs()
   }
-  const removeDoctor = (id) => setDocs(docs.filter((d) => d.id !== id))
+  const removeDoctor = async (id) => {
+    if (typeof id === 'string' && id.startsWith('s')) return alert('Seed doctors cannot be removed here.')
+    await apiDeleteDoctor(id); refreshDocs()
+  }
 
   const patients = [...new Map(appts.map((a) => [a.patient.phone || a.patient.name, a.patient])).values()]
 
@@ -104,8 +116,8 @@ export default function AdminDashboard() {
                     <span className={`chip mt-1 ${a.status === 'Cancelled' ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-700'}`}>{a.status}</span>
                   </div>
                   <div className="flex gap-2">
-                    {!a.paid && a.status !== 'Cancelled' && <button onClick={() => { updateAppointment(a.id, { paid: true }); refresh() }} className="btn-accent !py-2 !px-3 text-xs">Confirm Payment</button>}
-                    {a.status !== 'Cancelled' && <button onClick={() => { cancelAppointment(a.id); refresh() }} className="btn-ghost !py-2 !px-3 text-xs !text-red-500">Cancel</button>}
+                    {!a.paid && a.status !== 'Cancelled' && <button onClick={async () => { await apiConfirmPay(a.id); refresh() }} className="btn-accent !py-2 !px-3 text-xs">Confirm Payment</button>}
+                    {a.status !== 'Cancelled' && <button onClick={async () => { await apiCancel(a.id); refresh() }} className="btn-ghost !py-2 !px-3 text-xs !text-red-500">Cancel</button>}
                   </div>
                 </div>
               ))}

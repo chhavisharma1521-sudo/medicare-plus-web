@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { doctors, getDoctor } from '../data/doctors.js'
 import { specialties } from '../data/specialties.js'
-import { buildCalendar, generateAppointmentId, saveAppointment } from '../lib/appointments.js'
+import { buildCalendar, apiCreateAppointment } from '../lib/appointments.js'
 
 const STEPS = ['Doctor', 'Date & Time', 'Details', 'Payment', 'Confirmed']
 
@@ -19,6 +19,8 @@ export default function BookAppointment() {
   const [patient, setPatient] = useState({ name: '', phone: '', email: '', reason: '' })
   const [payMethod, setPayMethod] = useState('UPI')
   const [appt, setAppt] = useState(null)
+  const [booking, setBooking] = useState(false)
+  const [error, setError] = useState('')
 
   const deptDoctors = useMemo(
     () => (department === 'all' ? doctors : doctors.filter((d) => d.department === department)),
@@ -28,9 +30,10 @@ export default function BookAppointment() {
 
   const canConfirmPatient = patient.name && patient.phone
 
-  const finish = () => {
+  const finish = async () => {
+    setError('')
+    setBooking(true)
     const record = {
-      id: generateAppointmentId(),
       doctorId: doctor.id,
       doctorName: doctor.name,
       specialty: doctor.specialtyLabel,
@@ -42,11 +45,16 @@ export default function BookAppointment() {
       status: payMethod === 'Cash at Hospital' ? 'Confirmed (Pay at Hospital)' : 'Confirmed',
       paid: payMethod !== 'Cash at Hospital',
       patient,
-      createdAt: new Date().toISOString(),
     }
-    saveAppointment(record)
-    setAppt(record)
-    setStep(4)
+    try {
+      const saved = await apiCreateAppointment(record)
+      setAppt(saved)
+      setStep(4)
+    } catch {
+      setError('Booking failed. Please check your connection and try again.')
+    } finally {
+      setBooking(false)
+    }
   }
 
   return (
@@ -225,10 +233,11 @@ export default function BookAppointment() {
               ))}
             </div>
 
+            {error && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</p>}
             <div className="mt-6 flex justify-between">
-              <button onClick={() => setStep(2)} className="btn-ghost dark:text-slate-200">← Back</button>
-              <button onClick={finish} className="btn-accent">
-                {payMethod === 'Cash at Hospital' ? 'Confirm Booking' : `Pay ₹${doctor.fee}`}
+              <button onClick={() => setStep(2)} className="btn-ghost dark:text-slate-200" disabled={booking}>← Back</button>
+              <button onClick={finish} disabled={booking} className="btn-accent disabled:opacity-60">
+                {booking ? 'Processing…' : payMethod === 'Cash at Hospital' ? 'Confirm Booking' : `Pay ₹${doctor.fee}`}
               </button>
             </div>
           </Card>

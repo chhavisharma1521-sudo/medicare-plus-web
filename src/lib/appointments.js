@@ -1,68 +1,88 @@
-// Lightweight client-side appointment store (localStorage) + slot/date availability logic.
-// Swap with a real backend API later — the function signatures stay the same.
+// Real backend API (FastAPI + SQLite on Railway) — appointments persist across devices.
+export const API_BASE =
+  import.meta.env.VITE_API_URL || 'https://api-production-1b54e.up.railway.app'
 
-const KEY = 'shikhar_appointments'
-const DAY_ABBR = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sun']
+const DAY_ABBR = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
-// Fixed public holidays (MM-DD) — cannot be booked
 const HOLIDAYS = ['01-01', '01-26', '08-15', '10-02', '12-25']
 
-export function getAppointments() {
-  try {
-    return JSON.parse(localStorage.getItem(KEY) || '[]')
-  } catch {
-    return []
+// ── API calls ─────────────────────────────────────────
+export async function apiCreateAppointment(record) {
+  const payload = {
+    doctorId: record.doctorId,
+    doctorName: record.doctorName,
+    specialty: record.specialty,
+    hospital: record.hospital,
+    date: record.date,
+    slot: record.slot,
+    fee: record.fee,
+    payMethod: record.payMethod,
+    paid: !!record.paid,
+    status: record.status,
+    patientName: record.patient.name,
+    patientPhone: record.patient.phone || '',
+    patientEmail: record.patient.email || '',
+    reason: record.patient.reason || '',
   }
+  const res = await fetch(`${API_BASE}/api/appointments`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error('Booking failed')
+  return res.json()
 }
 
-export function saveAppointment(appt) {
-  const list = getAppointments()
-  list.unshift(appt)
-  localStorage.setItem(KEY, JSON.stringify(list))
-  return appt
+export async function apiGetAppointments({ phone = '', email = '' } = {}) {
+  const q = phone || email ? `?phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}` : ''
+  const res = await fetch(`${API_BASE}/api/appointments${q}`)
+  if (!res.ok) return []
+  return res.json()
 }
 
-export function updateAppointment(id, patch) {
-  const list = getAppointments().map((a) => (a.id === id ? { ...a, ...patch } : a))
-  localStorage.setItem(KEY, JSON.stringify(list))
+export async function apiPatchAppointment(id, patch) {
+  const res = await fetch(`${API_BASE}/api/appointments/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(patch),
+  })
+  return res.ok ? res.json() : null
 }
 
-export function cancelAppointment(id) {
-  updateAppointment(id, { status: 'Cancelled' })
+export const apiCancel = (id) => apiPatchAppointment(id, { status: 'Cancelled' })
+export const apiConfirmPay = (id) => apiPatchAppointment(id, { paid: true })
+
+// Extra doctors (admin-added, persisted)
+export async function apiGetExtraDoctors() {
+  const res = await fetch(`${API_BASE}/api/extra-doctors`)
+  return res.ok ? res.json() : []
+}
+export async function apiAddDoctor(d) {
+  const res = await fetch(`${API_BASE}/api/extra-doctors`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(d),
+  })
+  return res.ok ? res.json() : null
+}
+export async function apiDeleteDoctor(id) {
+  await fetch(`${API_BASE}/api/extra-doctors/${id}`, { method: 'DELETE' })
 }
 
-export function generateAppointmentId() {
-  const d = new Date()
-  const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}`
-  const rand = Math.floor(1000 + Math.random() * 9000)
-  return `SHK-${stamp}-${rand}`
-}
-
-// Deterministic "blocked" dates so the calendar feels real (based on day-of-month)
+// ── Calendar / blocked-date logic (client-side, deterministic) ──
 export function dateStatus(dateStr, doctor) {
   if (!dateStr) return { ok: true }
   const date = new Date(dateStr + 'T00:00:00')
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-
   if (date < today) return { ok: false, reason: 'Past date' }
-
-  const mmdd = dateStr.slice(5)
-  if (HOLIDAYS.includes(mmdd)) return { ok: false, reason: 'Holiday' }
-
+  if (HOLIDAYS.includes(dateStr.slice(5))) return { ok: false, reason: 'Holiday' }
   const weekday = DAYS[date.getDay()]
-  if (doctor && !doctor.availableDays.includes(weekday)) {
-    return { ok: false, reason: 'Doctor Not Available' }
-  }
-
-  // Every date whose day-of-month is divisible by 7 is a maintenance/blocked day
+  if (doctor && !doctor.availableDays.includes(weekday)) return { ok: false, reason: 'Doctor Not Available' }
   if (date.getDate() % 7 === 0) return { ok: false, reason: 'Blocked' }
-
   return { ok: true }
 }
 
-// Build the next N selectable days with their status
 export function buildCalendar(days, doctor) {
   const out = []
   const start = new Date()
@@ -78,4 +98,9 @@ export function buildCalendar(days, doctor) {
     })
   }
   return out
+}
+
+export function generateAppointmentId() {
+  const d = new Date()
+  return `SHK-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`
 }
